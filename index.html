@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamil Nadu District Explorer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-attachment: fixed;
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    h1 i {
+      color: #ffdd40;
+      background: #1a2a6c;
+      border-radius: 50%;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+    
+    .selector-container {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 30px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .selector-label {
+      display: block;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: #1a2a6c;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #district {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 1.2rem;
+      border: 2px solid #1a2a6c;
+      border-radius: 10px;
+      background-color: #f8f9fa;
+      color: #333;
+      transition: all 0.3s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a2a6c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2em;
+    }
+    
+    #district:focus {
+      outline: none;
+      border-color: #fdbb2d;
+      box-shadow: 0 0 0 3px rgba(253, 187, 45, 0.3);
+    }
+    
+    .content-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .section {
+      flex: 1;
+      min-width: 300px;
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease;
+    }
+    
+    .section:hover {
+      transform: translateY(-5px);
+    }
+    
+    .section h2 {
+      color: #1a2a6c;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #fdbb2d;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    ul {
+      padding-left: 25px;
+      list-style: none;
+    }
+    
+    li {
+      line-height: 1.8;
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 30px;
+    }
+    
+    li:before {
+      content: "•";
+      color: #b21f1f;
+      font-size: 1.8rem;
+      position: absolute;
+      left: 0;
+      top: -5px;
+    }
+    
+    .loading {
+      color: #666;
+      font-style: italic;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .map-container {
+      flex: 1.5;
+      min-width: 300px;
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .map-header {
+      background: linear-gradient(to right, #1a2a6c, #b21f1f);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .map-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .map-image {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #f5f7fa;
+      min-height: 400px;
+    }
+    
+    .map-image img {
+      max-width: 100%;
+      max-height: 500px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 1px solid #eaeaea;
+    }
+    
+    footer {
+      text-align: center;
+      color: white;
+      padding: 20px;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    
+    .no-data {
+      color: #b21f1f;
+      text-align: center;
+      padding: 30px;
+      font-style: italic;
+    }
+    
+    .info-container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    
+    .info-container h3 {
+      color: #1a2a6c;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.4rem;
+    }
+    
+    .api-status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .api-indicator {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #4CAF50;
+    }
+    
+    .api-indicator.loading {
+      background-color: #FFC107;
+      animation: pulse 1.5s infinite;
+    }
+    
+    .api-indicator.error {
+      background-color: #F44336;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .stat-card {
+      background: linear-gradient(to bottom right, #e3f2fd, #bbdefb);
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+    
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #1a2a6c;
+      margin: 10px 0;
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      color: #555;
+    }
+    
+    .api-details {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 0.9rem;
+    }
+    
+    .api-url {
+      color: #1a2a6c;
+      word-break: break-all;
+    }
+    
+    .district-highlight {
+      position: absolute;
+      background: rgba(253, 187, 45, 0.7);
+      border: 2px solid #b21f1f;
+      border-radius: 8px;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    @media (max-width: 768px) {
+      .content-wrapper {
+        flex-direction: column;
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .featured-image {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+      height: 200px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .image-attribution {
+      font-size: 0.8rem;
+      color: #666;
+      text-align: right;
+      margin-top: 5px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1><i class="fas fa-map-marked-alt"></i> Tamil Nadu District Explorer</h1>
+      <p class="subtitle">Discover educational institutions and tourist attractions across Tamil Nadu's diverse districts</p>
+    </header>
+    
+    <div class="selector-container">
+      <label for="district" class="selector-label">
+        <i class="fas fa-map-marker-alt"></i> Select a District:
+      </label>
+      <select id="district">
+        <option value="">-- Select District --</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Coimbatore">Coimbatore</option>
+        <option value="Madurai">Madurai</option>
+        <option value="Salem">Salem</option>
+        <option value="Tiruchirappalli">Tiruchirappalli</option>
+        <option value="Thanjavur">Thanjavur</option>
+        <option value="Tirunelveli">Tirunelveli</option>
+        <option value="Vellore">Vellore</option>
+        <option value="Erode">Erode</option>
+        <option value="Thoothukudi">Thoothukudi</option>
+        <option value="Tiruppur">Tiruppur</option>
+        <option value="Dindigul">Dindigul</option>
+        <option value="Theni">Theni</option>
+        <option value="Thiruvallur">Thiruvallur</option>
+        <option value="Kancheepuram">Kancheepuram</option>
+        <option value="Cuddalore">Cuddalore</option>
+        <option value="Nagapattinam">Nagapattinam</option>
+        <option value="Dharmapuri">Dharmapuri</option>
+        <option value="Krishnagiri">Krishnagiri</option>
+        <option value="Karur">Karur</option>
+        <option value="Tiruvannamalai">Tiruvannamalai</option>
+        <option value="Viluppuram">Viluppuram</option>
+        <option value="Virudhunagar">Virudhunagar</option>
+        <option value="Ramanathapuram">Ramanathapuram</option>
+        <option value="Pudukkottai">Pudukkottai</option>
+        <option value="Sivaganga">Sivaganga</option>
+        <option value="Thiruvarur">Thiruvarur</option>
+        <option value="Ariyalur">Ariyalur</option>
+        <option value="Perambalur">Perambalur</option>
+        <option value="Namakkal">Namakkal</option>
+        <option value="Nilgiris">Nilgiris</option>
+        <option value="Tenkasi">Tenkasi</option>
+        <option value="Tirupathur">Tirupathur</option>
+        <option value="Ranipet">Ranipet</option>
+        <option value="Kallakurichi">Kallakurichi</option>
+        <option value="Chengalpattu">Chengalpattu</option>
+      </select>
+    </div>
+    
+    <div class="content-wrapper">
+      <div class="section">
+        <h2><i class="fas fa-graduation-cap"></i> Educational Institutions & <i class="fas fa-mountain"></i> Tourist Attractions</h2>
+        <div id="district-info" class="loading">Select a district to view details...</div>
+        
+        <div class="api-status">
+          <span class="api-indicator" id="api-status-indicator"></span>
+          <span id="api-status-text">API Status: Ready</span>
+        </div>
+        
+        <div class="api-details">
+          <strong>API Endpoint:</strong> 
+          <span class="api-url" id="api-url">https://api.tn-explorer.com/v1/districts/{district}</span>
+          <div><small>Mock API running in browser</small></div>
+        </div>
+      </div>
+      
+      <div class="map-container">
+        <div class="map-header">
+          <h2><i class="fas fa-map"></i> Tamil Nadu District Map</h2>
+        </div>
+        <div class="map-image">
+          <img id="district-map" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Tamil_Nadu_districts_map.svg/1200px-Tamil_Nadu_districts_map.svg.png" alt="Tamil Nadu district map">
+        </div>
+      </div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-landmark"></i>
+        <div class="stat-value">38</div>
+        <div class="stat-label">Districts</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-university"></i>
+        <div class="stat-value">1,200+</div>
+        <div class="stat-label">Colleges</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-temple"></i>
+        <div class="stat-value">500+</div>
+        <div class="stat-label">Temples</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <div class="stat-value">78M</div>
+        <div class="stat-label">Population</div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>Explore the rich cultural and educational heritage of Tamil Nadu | © 2023 District Explorer</p>
+      <p>Self-contained mock API implementation | All data is simulated</p>
+    </footer>
+  </div>
+
+  <script>
+    // Self-contained Mock API Database
+    const mockApiDatabase = {
+      "Chennai": {
+        attractions: ["Marina Beach", "Fort St. George", "Kapaleeshwarar Temple", "Guindy National Park", "Valluvar Kottam"],
+        institutions: ["Anna University", "IIT Madras", "Madras Christian College", "Loyola College", "Stella Maris College"],
+        population: "7.1 million",
+        area: "426 km²",
+        founded: "1639",
+        image: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Arun Thomas"
+      },
+      "Coimbatore": {
+        attractions: ["Isha Yoga Center", "Marudhamalai Temple", "VOC Zoo", "Black Thunder Water Park", "Siruvani Waterfalls"],
+        institutions: ["PSG College of Technology", "Government College of Technology", "Amrita University", "TNAU", "Sri Krishna College"],
+        population: "3.5 million",
+        area: "642 km²",
+        founded: "1804",
+        image: "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Prasanth Inturi"
+      },
+      "Madurai": {
+        attractions: ["Meenakshi Amman Temple", "Gandhi Museum", "Thirumalai Nayakkar Mahal", "Koodal Azhagar Temple", "Vaigai Dam"],
+        institutions: ["Thiagarajar College of Engineering", "Madurai Kamaraj University", "The American College", "Thiagarajar School of Management", "Lady Doak College"],
+        population: "3.0 million",
+        area: "148 km²",
+        founded: "Pre-6th century BCE",
+        image: "https://images.unsplash.com/photo-1597145122872-a1b1e1d3c1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Senthil Kumaran"
+      },
+      "Salem": {
+        attractions: ["Yercaud Hills", "Kiliyur Falls", "Mettur Dam", "1008 Lingam Temple", "Kurumbapatti Zoological Park"],
+        institutions: ["Sona College of Technology", "GCE Salem", "Periyar University", "Government College of Engineering", "JKK Nataraja College"],
+        population: "3.5 million",
+        area: "5,245 km²",
+        founded: "1792",
+        image: "https://images.unsplash.com/photo-1593697820826-fc3d81ae718f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Senthil Kumar"
+      },
+      "Tiruchirappalli": {
+        attractions: ["Rock Fort Temple", "Srirangam Temple", "Jambukeswarar Temple", "Kallanai Dam", "Mukkombu Dam"],
+        institutions: ["NIT Trichy", "Bishop Heber College", "St. Joseph's College", "National Law University", "Jamal Mohamed College"],
+        population: "1.7 million",
+        area: "146 km²",
+        founded: "3rd century BCE",
+        image: "https://images.unsplash.com/photo-1610085927543-9b5d9a6c7b1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Rajesh Kumar"
+      },
+      "Thanjavur": {
+        attractions: ["Brihadeeswarar Temple", "Thanjavur Palace", "Saraswathi Mahal Library", "Thiruvaiyaru", "Sivaganga Park"],
+        institutions: ["SASTRA University", "Periyar Maniammai Institute of Technology", "Tamil University", "Government College of Engineering", "PRIST University"],
+        population: "2.4 million",
+        area: "3,397 km²",
+        founded: "Pre-9th century",
+        image: "https://images.unsplash.com/photo-1589553416260-fd49af119b16?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Arun Kumar"
+      },
+      "Tirunelveli": {
+        attractions: ["Nellaiappar Temple", "Courtallam Falls", "Kutralam Waterfalls", "Manimuthar Dam", "Agasthiyar Falls"],
+        institutions: ["Manonmaniam Sundaranar University", "Tirunelveli Medical College", "Government College of Engineering", "St. John's College", "Sarah Tucker College"],
+        population: "1.7 million",
+        area: "6,823 km²",
+        founded: "Pre-7th century",
+        image: "https://images.unsplash.com/photo-1610085927543-9b5d9a6c7b1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Ramesh Kumar"
+      },
+      "Vellore": {
+        attractions: ["Vellore Fort", "Golden Temple", "Jalakandeswarar Temple", "Yelagiri Hills", "Amirthi Zoological Park"],
+        institutions: ["VIT University", "Christian Medical College", "Government Medical College", "Thanthai Periyar Government Institute", "Kalaignar Karunanidhi Institute"],
+        population: "1.9 million",
+        area: "6,077 km²",
+        founded: "Pre-9th century",
+        image: "https://images.unsplash.com/photo-1610085927543-9b5d9a6c7b1f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        image_attribution: "Photo by Suresh Babu"
+      }
+    };
+
+    // Mock API Service
+    class DistrictAPI {
+      constructor() {
+        this.baseUrl = "https://api.tn-explorer.com/v1/districts";
+        this.statusIndicator = document.getElementById('api-status-indicator');
+        this.statusText = document.getElementById('api-status-text');
+        this.apiUrlElement = document.getElementById('api-url');
+      }
+      
+      // Simulate API call with delay
+      async getDistrictData(districtName) {
+        // Update API status
+        this.updateStatus('loading', `Fetching data for ${districtName}...`);
+        
+        // Show the API URL being called
+        this.apiUrlElement.textContent = `${this.baseUrl}/${districtName.toLowerCase()}`;
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
+        if (mockApiDatabase[districtName]) {
+          this.updateStatus('success', `Data loaded for ${districtName}`);
+          return mockApiDatabase[districtName];
+        } else {
+          this.updateStatus('error', `Data not available for ${districtName}`);
+          return null;
+        }
+      }
+      
+      updateStatus(status, message) {
+        this.statusIndicator.className = 'api-indicator';
+        this.statusText.textContent = `API Status: ${message}`;
+        
+        switch(status) {
+          case 'loading':
+            this.statusIndicator.classList.add('loading');
+            this.statusIndicator.style.backgroundColor = '#FFC107';
+            break;
+          case 'success':
+            this.statusIndicator.style.backgroundColor = '#4CAF50';
+            break;
+          case 'error':
+            this.statusIndicator.style.backgroundColor = '#F44336';
+            break;
+          default:
+            this.statusIndicator.style.backgroundColor = '#9E9E9E';
+        }
+      }
+    }
+    
+    // Initialize the API service
+    const apiService = new DistrictAPI();
+    const infoDiv = document.getElementById("district-info");
+    const districtSelect = document.getElementById("district");
+    const mapImage = document.getElementById("district-map");
+    
+    // Handle district selection
+    districtSelect.addEventListener("change", async () => {
+      const selected = districtSelect.value;
+      
+      if (!selected) {
+        infoDiv.innerHTML = '<div class="loading">Select a district to view details...</div>';
+        return;
+      }
+      
+      // Show loading state
+      infoDiv.innerHTML = `
+        <div style="text-align:center; padding: 30px;">
+          <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #1a2a6c; margin-bottom: 15px;"></i>
+          <p>Fetching district data from API...</p>
+        </div>
+      `;
+      
+      // Fetch data from API
+      const data = await apiService.getDistrictData(selected);
+      
+      if (!data) {
+        infoDiv.innerHTML = `
+          <div class="no-data">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px;"></i>
+            <p>No data available for this district.</p>
+            <p>Please try another district.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Render the data
+      let html = '<div class="info-container">';
+      
+      if (data.attractions && data.attractions.length > 0) {
+        html += '<h3><i class="fas fa-camera-retro"></i> Tourist Attractions</h3>';
+        html += '<ul>';
+        data.attractions.forEach(item => {
+          html += `<li>${item}</li>`;
+        });
+        html += '</ul>';
+      }
+      
+      if (data.institutions && data.institutions.length > 0) {
+        html += '<h3><i class="fas fa-book-open"></i> Educational Institutions</h3>';
+        html += '<ul>';
+        data.institutions.forEach(item => {
+          html += `<li>${item}</li>`;
+        });
+        html += '</ul>';
+      }
+      
+      // Add district stats
+      html += '<h3><i class="fas fa-chart-bar"></i> District Statistics</h3>';
+      html += '<div class="stats-grid">';
+      html += `<div class="stat-card"><i class="fas fa-users"></i><div class="stat-value">${data.population}</div><div class="stat-label">Population</div></div>`;
+      html += `<div class="stat-card"><i class="fas fa-arrows-alt"></i><div class="stat-value">${data.area}</div><div class="stat-label">Area</div></div>`;
+      html += `<div class="stat-card"><i class="fas fa-history"></i><div class="stat-value">${data.founded}</div><div class="stat-label">Established</div></div>`;
+      html += '</div>';
+      
+      // Add featured image
+      if (data.image) {
+        html += `<h3><i class="fas fa-image"></i> Featured Image</h3>`;
+        html += `<img src="${data.image}" class="featured-image" alt="${selected} district">`;
+        html += `<div class="image-attribution">${data.image_attribution}</div>`;
+      }
+      
+      html += '</div>';
+      
+      infoDiv.innerHTML = html;
+      
+      // Simulate highlighting the district on the map
+      highlightDistrictOnMap(selected);
+    });
+    
+    // Function to simulate highlighting a district on the map
+    function highlightDistrictOnMap(district) {
+      // Remove any existing highlights
+      document.querySelectorAll('.district-highlight').forEach(el => el.remove());
+      
+      // Define positions for some districts (simulated)
+      const districtPositions = {
+        "Chennai": { top: "70%", left: "85%", width: "6%", height: "4%" },
+        "Coimbatore": { top: "40%", left: "25%", width: "6%", height: "4%" },
+        "Madurai": { top: "65%", left: "45%", width: "6%", height: "4%" },
+        "Salem": { top: "45%", left: "40%", width: "6%", height: "4%" },
+        "Tiruchirappalli": { top: "55%", left: "55%", width: "6%", height: "4%" },
+        "Thanjavur": { top: "58%", left: "65%", width: "6%", height: "4%" },
+        "Tirunelveli": { top: "80%", left: "45%", width: "6%", height: "4%" },
+        "Vellore": { top: "50%", left: "65%", width: "6%", height: "4%" }
+      };
+      
+      if (districtPositions[district]) {
+        const pos = districtPositions[district];
+        const highlight = document.createElement('div');
+        highlight.className = 'district-highlight';
+        highlight.style.top = pos.top;
+        highlight.style.left = pos.left;
+        highlight.style.width = pos.width;
+        highlight.style.height = pos.height;
+        
+        document.querySelector('.map-image').appendChild(highlight);
+      }
+    }
+    
+    // Initialize with Chennai selected
+    setTimeout(() => {
+      districtSelect.value = "Chennai";
+      const event = new Event('change');
+      districtSelect.dispatchEvent(event);
+    }, 500);
+  </script>
+</body>
+</html>
