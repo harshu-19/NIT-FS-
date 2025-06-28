@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HARSHITHA | Portfolio</title>
+
+  <style>
+    :root {
+      --main-bg: linear-gradient(135deg, #bfd6e5, #00c896);
+      --text-light: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.1);
+      --accent: #38bdf8;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--main-bg);
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1em 2em;
+      background-color: rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 1.5em;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4em 2em;
+    }
+
+    .hero h1 {
+      font-size: 2.8em;
+      margin-bottom: 0.3em;
+    }
+
+    .section {
+      background-color: var(--card-bg);
+      margin: 2em;
+      padding: 2em;
+      border-radius: 10px;
+    }
+
+    .section h2 {
+      color: #fff;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.3em;
+    }
+
+    .skills {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+
+    .skills li {
+      background: var(--accent);
+      color: #000;
+      padding: 0.6em 1em;
+      border-radius: 6px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+
+    form input[type="file"],
+    form button {
+      padding: 0.8em;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    form input[type="file"] {
+      background-color: #fff;
+      color: #000;
+    }
+
+    form button {
+      background-color: #10b78d;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2em;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="logo">Harshitha.dev</div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#download">download CV</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>I'm HARSHITHA</h1>
+    <p>A frontend developer who loves clean design and interactive UI.Full Stack Enthusiastic !!</p>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section">
+    <h2>About Me</h2>
+    <p>I create user-friendly websites with modern web technologies which is innovaive !!</p>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills" class="section">
+    <h2>Skills</h2>
+    <ul class="skills">
+      <li>HTML5</li>
+      <li>CSS3</li>
+      <li>JavaScript</li>
+      <li>Git & GitHub</li>
+       <li>python programming</li>
+    </ul>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects" class="section">
+    <h2>Projects</h2>
+    <div class="project">
+      <h3>My Portfolio Website</h3>
+      <p>A responsive site that showcases my projects and allows users to download or upload a resume.</p>
+    </div>
+  </section>
+
+  <!-- Upload CV -->
+  <section id="download" class="section">
+  <h2>Download My CV</h2>
+  <a href="C:\Users\harsh\Downloads\Harshitha Resume.pdf" download class="btn">Download Resume (PDF)</a>
+</section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 HARSHITHA. Crafted with 💙 in India.</p>
+  </footer>
+
+</body>
+</html>
