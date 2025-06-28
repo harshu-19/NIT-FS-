@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harshitha Prakash | AI & Data Science Student</title>
+
+  <style>
+    :root {
+      --primary: #0066cc;
+      --dark: #222;
+      --light: #f9f9f9;
+      --font: 'Segoe UI', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header, footer {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.9rem;
+      color: white;
+    }
+
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 0.3rem;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .project-card {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 6px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    input, textarea {
+      padding: 0.75rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button, .resume-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      cursor: pointer;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .resume-btn {
+      margin-top: 1rem;
+    }
+
+    /* Scroll animation */
+    section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease-in-out;
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Dark mode */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark header,
+    body.dark footer {
+      background: #1e1e1e;
+    }
+
+    body.dark .project-card,
+    body.dark input,
+    body.dark textarea,
+    body.dark .resume-preview {
+      background: #222;
+      color: #fff;
+      border-color: #555;
+    }
+
+    /* Resume Styling */
+    #resume {
+      margin-top: 2rem;
+    }
+
+    .resume-preview {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      margin-top: 1rem;
+    }
+
+    .resume-preview h3 {
+      margin-top: 1.2rem;
+    }
+
+    .resume-preview ul {
+      margin-left: 1.2rem;
+      list-style: disc;
+    }
+
+    @media (min-width: 768px) {
+      .project-card {
+        max-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Harshitha Prakash</h1>
+    <p>B.Tech in AI & Data Science | CSI College of Engineering, Ketti</p>
+    <label class="theme-toggle">
+      <input type="checkbox" id="darkToggle"> Dark Mode
+    </label>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>About Me</h2>
+      <p>Ambitious and dedicated B.Tech student in Artificial Intelligence and Data Science, passionate about applying analytical thinking and technology to real-world problems.</p>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <ul>
+        <li>Machine Learning</li>
+        <li>Python Programming</li>
+        <li>Predictive Modeling</li>
+        <li>Team Collaboration</li>
+        <li>Project Management</li>
+        <li>Time Management</li>
+      </ul>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="project-card">
+        <h3>NAAN MUDHALVAN – Price Prediction</h3>
+        <p>Developed a price prediction model as part of a practical learning initiative.</p>
+        <a href="https://github.com/harshu-19/samplerepo.git" target="_blank">🔗 View Project on GitHub</a>
+      </div>
+    </section>
+
+    <section id="resume">
+      <h2>Resume</h2>
+      <a href="assets/Harshitha_Prakash_Resume.pdf" class="resume-btn" download>📄 Download Resume (PDF)</a>
+
+      <div class="resume-preview">
+        <h3>🎯 Summary</h3>
+        <p>Ambitious and dedicated B.Tech student in AI and Data Science with a passion for learning and solving complex problems through analytical thinking and teamwork.</p>
+
+        <h3>📚 Education</h3>
+        <p><strong>CSI College of Engineering, Ketti</strong><br>
+        B.Tech in Artificial Intelligence and Data Science<br>
+        <em>Expected Graduation: May 2027</em></p>
+
+        <h3>💼 Experience</h3>
+        <p><strong>Student</strong> – Ooty, India<br>
+        <em>August 2023 – Present</em></p>
+        <ul>
+          <li>Participated in academic competitions and technical workshops</li>
+          <li>Engaged in team discussions and collaborative learning</li>
+          <li>Completed NAAN MUDHALVAN Project on price prediction</li>
+          <li><a href="https://github.com/harshu-19/samplerepo.git" target="_blank">🔗 View Project</a></li>
+        </ul>
+
+        <h3>🛠 Skills</h3>
+        <ul>
+          <li>Machine Learning</li>
+          <li>Python Programming</li>
+          <li>Predictive Modeling</li>
+          <li>Team Collaboration</li>
+          <li>Project Management</li>
+          <li>Time Management</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <form>
+        <input type="text" placeholder="Name" required />
+        <input type="email" placeholder="Email" required />
+        <textarea placeholder="Your message..." required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Harshitha Prakash</p>
+  </footer>
+
+  <script>
+    // Scroll animation
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.1 });
+    sections.forEach(section => observer.observe(section));
+
+    // Dark mode toggle
+    const toggle = document.getElementById("darkToggle");
+    toggle.addEventListener("change", () => {
+      document.body.classList.toggle("dark");
+    });
+  </script>
+
+</body>
+</html>
