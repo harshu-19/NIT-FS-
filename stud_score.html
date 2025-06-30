@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Score Tracker</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    input[type="text"], input[type="number"] {
+      width: 90%;
+      padding: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2> Student Score Tracker</h2>
+  
+  <label>Enter number of students: </label>
+  <input type="number" id="studentCount" min="1" value="2">
+  <button onclick="generateForm()">Generate Table</button>
+
+  <form onsubmit="return false;">
+    <table id="studentTable" style="display: none;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>ID</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th>Mark 1</th>
+          <th>Mark 2</th>
+          <th>Mark 3</th>
+          <th>Average</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <button id="calcBtn" onclick="calculateResults()" style="display:none;">Calculate & Sort</button>
+  </form>
+
+  <script>
+    function calculateAverage(marks) {
+      return marks.reduce((a, b) => a + b, 0) / marks.length;
+    }
+
+    function assignGrade(avg) {
+      if (avg >= 90) return "A+";
+      else if (avg >= 80) return "A";
+      else if (avg >= 70) return "B";
+      else if (avg >= 60) return "C";
+      else return "F";
+    }
+
+    function generateForm() {
+      const count = parseInt(document.getElementById("studentCount").value);
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+      document.getElementById("studentTable").style.display = "table";
+      document.getElementById("calcBtn").style.display = "inline-block";
+
+      for (let i = 0; i < count; i++) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><input type="text" placeholder="Name"></td>
+          <td><input type="text" placeholder="ID"></td>
+          <td><input type="text" placeholder="Dept"></td>
+          <td><input type="text" placeholder="Year"></td>
+          <td><input type="number" min="0" max="100"></td>
+          <td><input type="number" min="0" max="100"></td>
+          <td><input type="number" min="0" max="100"></td>
+          <td class="avg">-</td>
+          <td class="grade">-</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+
+    function calculateResults() {
+      const rows = Array.from(document.querySelectorAll("#tableBody tr"));
+      const students = [];
+
+      for (let row of rows) {
+        const inputs = row.querySelectorAll("input");
+        const name = inputs[0].value.trim();
+        const id = inputs[1].value.trim();
+        const department = inputs[2].value.trim();
+        const year = inputs[3].value.trim();
+        const marks = [parseFloat(inputs[4].value), parseFloat(inputs[5].value), parseFloat(inputs[6].value)];
+
+        if (marks.some(isNaN) || !name) {
+          alert("Please complete all fields for each student.");
+          return;
+        }
+
+        const avg = calculateAverage(marks);
+        const grade = assignGrade(avg);
+
+        students.push({ name, id, department, year, marks, avg: avg.toFixed(2), grade });
+      }
+
+      // Sort by name ascending
+      students.sort((a, b) => a.name.localeCompare(b.name));
+
+      // Re-render sorted results
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      for (let student of students) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.id}</td>
+          <td>${student.department}</td>
+          <td>${student.year}</td>
+          <td>${student.marks[0]}</td>
+          <td>${student.marks[1]}</td>
+          <td>${student.marks[2]}</td>
+          <td class="avg">${student.avg}</td>
+          <td class="grade">${student.grade}</td>
+        `;
+        tbody.appendChild(row);
+      }
+    }
+  </script>
+
+</body>
+</html>
