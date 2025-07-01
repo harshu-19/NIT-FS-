@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Tree Count Map</title>
+<style>
+  :root {
+    --primary: #4e54c8;
+    --secondary: #8f94fb;
+    --accent: #f6d365;
+    --text: #2c3e50;
+    --light: #f8f9fa;
+    --success: #28a745;
+  }
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, var(--light) 0%, #e6e9f0 100%);
+    color: var(--text);
+  }
+  header {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  h1 {
+    margin: 0;
+    font-size: 2.2rem;
+  }
+  .tagline {
+    font-style: italic;
+    opacity: 0.9;
+  }
+  #map {
+    width: 100%;
+    height: 500px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+  .info-panel {
+    max-width: 1000px;
+    margin: 0 auto 30px;
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  footer {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    color: white;
+    border-radius: 20px 20px 0 0;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+  <h1>Interactive Tree Count Map</h1>
+  <p class="tagline">Click anywhere to see an estimated tree count</p>
+</header>
+
+<main>
+  <div id="map"></div>
+  <div class="info-panel">
+    <h2>How it works</h2>
+    <p>Click anywhere on the satellite map to drop a marker and get an estimated number of trees in that region. The estimate is simulated and does not use real data.</p>
+  </div>
+</main>
+
+<footer>
+  <p>© <span id="year"></span> Tree Count Visualization | Demo</p>
+</footer>
+
+<script>
+  let map;
+
+  // Function to simulate tree count based on lat/lng
+  function estimateTrees(lat, lng) {
+    const trees = Math.abs(Math.sin(lat) * Math.cos(lng)) * 100000;
+    return Math.round(trees);
+  }
+
+  function initMap() {
+    const centerCoords = { lat: 11.1271, lng: 78.6569 }; // Tamil Nadu center
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: centerCoords,
+      zoom: 7,
+      mapTypeId: "satellite"
+    });
+
+    // Listen for clicks anywhere on the map
+    map.addListener("click", (event) => {
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const trees = estimateTrees(lat, lng);
+
+      // Place marker
+      const marker = new google.maps.Marker({
+        position: { lat, lng },
+        map,
+        animation: google.maps.Animation.DROP
+      });
+
+      // Draw circle around the clicked point
+      const circle = new google.maps.Circle({
+        strokeColor: "#28a745",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#28a745",
+        fillOpacity: 0.25,
+        map,
+        center: { lat, lng },
+        radius: 2000 // 2 km
+      });
+
+      // Info window showing tree estimate
+      const infoWindow = new google.maps.InfoWindow({
+        content: `📍 <strong>Location:</strong> (${lat.toFixed(4)}, ${lng.toFixed(4)})<br>🌳 <strong>Estimated trees:</strong> ${trees.toLocaleString()}`
+      });
+
+      // Open info window when marker is clicked
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+      });
+
+      // Optionally, open info window immediately
+      infoWindow.open(map, marker);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('year').textContent = new Date().getFullYear();
+  });
+</script>
+
+<!-- Google Maps API key -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCYeSRlT14A3l1M2bIHLOdUXBiGxbm0eGo&callback=initMap"></script>
+</body>
+</html>
