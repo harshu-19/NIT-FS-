@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛒 Enhanced Product Catalog with Cart</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f7f7f7, #e0e6ff);
+      min-height: 100vh;
+      color: #333;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    header {
+      background: linear-gradient(135deg, #4e54c8, #8f94fb);
+      color: white;
+      padding: 25px;
+      text-align: center;
+      border-bottom: 5px solid #3a3f9e;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+    
+    .content-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    
+    .catalog-section {
+      flex: 3;
+      min-width: 300px;
+      padding: 20px;
+    }
+    
+    .cart-section {
+      flex: 1;
+      min-width: 300px;
+      background: #f8f9ff;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .form-container {
+      padding: 15px;
+      background: #f8f9ff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    #product-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    @media (max-width: 768px) {
+      #product-form {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    form input, form select, form button {
+      padding: 12px 15px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    form input:focus, form select:focus {
+      outline: none;
+      border-color: #4e54c8;
+      box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
+    }
+    
+    form select { 
+      background-color: white; 
+      cursor: pointer; 
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234e54c8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      padding-right: 40px;
+    }
+    
+    form button {
+      background: linear-gradient(135deg, #4CAF50, #2E7D32);
+      color: white;
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
+      align-self: flex-end;
+      height: 44px;
+    }
+    
+    form button:hover {
+      background: linear-gradient(135deg, #43A047, #1B5E20);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(76, 175, 80, 0.4);
+    }
+    
+    #summary {
+      background: #4e54c8;
+      color: white;
+      padding: 18px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .summary-value {
+      font-weight: 700;
+      font-size: 1.3rem;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 5px 15px;
+      border-radius: 20px;
+    }
+    
+    .rupee-symbol {
+      font-weight: bold;
+    }
+    
+    #product-list {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    
+    .product {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      margin: 15px 0;
+      padding: 20px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .product:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #4e54c8;
+    }
+    
+    .product-info {
+      flex-grow: 1;
+    }
+    
+    .product-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #2c3e50;
+    }
+    
+    .product-price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #27ae60;
+      margin: 8px 0;
+    }
+    
+    .product-category {
+      display: inline-block;
+      background: #e0e6ff;
+      color: #4e54c8;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .details-btn, .delete-btn, .add-to-cart-btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .details-btn { 
+      background: linear-gradient(135deg, #2196F3, #0b7dda);
+      color: white;
+      box-shadow: 0 3px 6px rgba(33, 150, 243, 0.3);
+    }
+    
+    .details-btn:hover { 
+      background: linear-gradient(135deg, #0b7dda, #0a6ebd);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 8px rgba(33, 150, 243, 0.4);
+    }
+    
+    .delete-btn { 
+      background: linear-gradient(135deg, #f44336, #d32f2f);
+      color: white;
+      box-shadow: 0 3px 6px rgba(244, 67, 54, 0.3);
+    }
+    
+    .delete-btn:hover { 
+      background: linear-gradient(135deg, #e53935, #c62828);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 8px rgba(244, 67, 54, 0.4);
+    }
+    
+    .add-to-cart-btn {
+      background: linear-gradient(135deg, #FF9800, #F57C00);
+      color: white;
+      box-shadow: 0 3px 6px rgba(255, 152, 0, 0.3);
+    }
+    
+    .add-to-cart-btn:hover {
+      background: linear-gradient(135deg, #F57C00, #E65100);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 8px rgba(255, 152, 0, 0.4);
+    }
+    
+    /* Cart Styles */
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #4e54c8;
+    }
+    
+    .cart-title {
+      font-size: 1.8rem;
+      color: #4e54c8;
+    }
+    
+    #cart-list {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+    }
+    
+    .cart-item {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .cart-item-info {
+      flex: 1;
+    }
+    
+    .cart-item-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    
+    .cart-item-price {
+      font-weight: 700;
+      color: #27ae60;
+    }
+    
+    .cart-item-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .remove-from-cart-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .cart-total {
+      background: #4e54c8;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 1.4rem;
+      text-align: center;
+      font-weight: 700;
+    }
+    
+    .cart-empty {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+    }
+    
+    .cart-empty img {
+      width: 100px;
+      opacity: 0.6;
+      margin-bottom: 15px;
+    }
+    
+    /* Modal styles */
+    .modal { 
+      display: none; 
+      position: fixed; 
+      z-index: 1000;
+      left: 0; 
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto;
+      background-color: rgba(0,0,0,0.7); 
+    }
+    
+    .modal-content {
+      margin: 8% auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      position: relative;
+      animation: modalOpen 0.4s;
+    }
+    
+    @keyframes modalOpen {
+      from {opacity: 0; transform: translateY(-60px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      font-size: 32px;
+      cursor: pointer;
+      color: #888;
+      transition: color 0.2s;
+    }
+    
+    .close:hover { 
+      color: #f44336; 
+    }
+    
+    .modal h2 {
+      color: #4e54c8;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .modal-body {
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    
+    .modal-body strong {
+      color: #4e54c8;
+      min-width: 100px;
+      display: inline-block;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #777;
+      font-size: 0.9rem;
+      background: #f8f9ff;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #777;
+    }
+    
+    .empty-state img {
+      width: 120px;
+      opacity: 0.6;
+      margin-bottom: 20px;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 8px;
+      background: #4CAF50;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+      z-index: 2000;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.error {
+      background: #f44336;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛒 Indian Product Catalog with Cart</h1>
+      <div class="subtitle">Add products to your catalog and manage your shopping cart</div>
+    </header>
+    
+    <div class="content-wrapper">
+      <div class="catalog-section">
+        <div class="form-container">
+          <form id="product-form">
+            <div class="form-group">
+              <label for="name">Product Name</label>
+              <input type="text" id="name" placeholder="Enter product name" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="price">Price (₹)</label>
+              <input type="number" id="price" placeholder="Enter price" required min="0" step="0.01">
+            </div>
+            
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category" required>
+                <option value="">Select Category</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Clothing">Clothing</option>
+                <option value="Books">Books</option>
+                <option value="Home Appliances">Home Appliances</option>
+                <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                <option value="Sports & Outdoors">Sports & Outdoors</option>
+                <option value="Toys & Games">Toys & Games</option>
+                <option value="Automotive">Automotive</option>
+                <option value="Groceries">Groceries</option>
+                <option value="Health & Wellness">Health & Wellness</option>
+                <option value="Jewelry">Jewelry</option>
+                <option value="Shoes">Shoes</option>
+                <option value="Bags & Accessories">Bags & Accessories</option>
+                <option value="Office Supplies">Office Supplies</option>
+                <option value="Furniture">Furniture</option>
+                <option value="Pet Supplies">Pet Supplies</option>
+                <option value="Garden & Outdoor">Garden & Outdoor</option>
+                <option value="Baby Products">Baby Products</option>
+                <option value="Musical Instruments">Musical Instruments</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            
+            <button type="submit">Add Product</button>
+          </form>
+        </div>
+        
+        <div id="summary">
+          <div class="summary-item">
+            <span>Total Products:</span>
+            <span class="summary-value" id="product-count">0</span>
+          </div>
+          <div class="summary-item">
+            <span>Total Price:</span>
+            <span class="summary-value"><span class="rupee-symbol">₹</span><span id="total-price">0.00</span></span>
+          </div>
+        </div>
+        
+        <div id="product-list">
+          <div class="empty-state" id="empty-state">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E" alt="Shopping cart">
+            <h3>No Products Added Yet</h3>
+            <p>Start by adding your first product using the form above</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cart-section">
+        <div class="cart-header">
+          <h2 class="cart-title">🛒 Your Shopping Cart</h2>
+          <span id="cart-count">0 items</span>
+        </div>
+        
+        <div id="cart-list">
+          <div class="cart-empty">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E" alt="Empty cart">
+            <h3>Your cart is empty</h3>
+            <p>Add products from the catalog</p>
+          </div>
+        </div>
+        
+        <div class="cart-total">
+          Total: ₹<span id="cart-total">0.00</span>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>Product Catalog • All prices in Indian Rupees (₹)</p>
+    </footer>
+  </div>
+  
+  <!-- Modal -->
+  <div id="details-modal" class="modal">
+    <div class="modal-content">
+      <span id="close-modal" class="close">&times;</span>
+      <h2>Product Details</h2>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+  
+  <!-- Notification -->
+  <div class="notification" id="notification">Product added successfully!</div>
+
+  <script>
+    let products = [];
+    let cart = [];
+
+    // Load products and cart from localStorage
+    const savedProducts = localStorage.getItem('products');
+    if (savedProducts) {
+      products = JSON.parse(savedProducts);
+    }
+    
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      cart = JSON.parse(savedCart);
+    }
+
+    const form = document.getElementById('product-form');
+    const productList = document.getElementById('product-list');
+    const productCount = document.getElementById('product-count');
+    const totalPriceEl = document.getElementById('total-price');
+    const modal = document.getElementById('details-modal');
+    const modalBody = document.getElementById('modal-body');
+    const closeModalBtn = document.getElementById('close-modal');
+    const notification = document.getElementById('notification');
+    const cartList = document.getElementById('cart-list');
+    const cartTotal = document.getElementById('cart-total');
+    const cartCount = document.getElementById('cart-count');
+
+    displayProducts();
+    updateCart();
+
+    // Add product
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const priceInput = document.getElementById('price').value;
+      const category = document.getElementById('category').value;
+      
+      // Validate inputs
+      if (!name) {
+        showNotification('Please enter a product name', true);
+        return;
+      }
+      
+      if (!priceInput) {
+        showNotification('Please enter a price', true);
+        return;
+      }
+      
+      const price = parseFloat(priceInput);
+      
+      if (isNaN(price) || price <= 0) {
+        showNotification('Please enter a valid price', true);
+        return;
+      }
+      
+      if (!category) {
+        showNotification('Please select a category', true);
+        return;
+      }
+
+      const newProduct = { 
+        id: Date.now(), 
+        name, 
+        price, 
+        category,
+        date: new Date().toLocaleString()
+      };
+      
+      products = [...products, newProduct];
+      saveProducts();
+      displayProducts();
+      form.reset();
+      
+      showNotification('Product added successfully!');
+    });
+
+    // Handle product buttons
+    productList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('details-btn')) {
+        showDetails(e.target.dataset.id);
+      } else if (e.target.classList.contains('delete-btn')) {
+        deleteProduct(e.target.dataset.id);
+      } else if (e.target.classList.contains('add-to-cart-btn')) {
+        addToCart(e.target.dataset.id);
+      }
+    });
+
+    // Handle cart buttons
+    cartList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('remove-from-cart-btn')) {
+        removeFromCart(e.target.dataset.index);
+      }
+    });
+
+    // Modal close
+    closeModalBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+
+    // Calculate total price
+    const calculateTotal = () => {
+      return products.reduce((sum, product) => sum + product.price, 0);
+    };
+
+    const displayProducts = () => {
+      if (products.length === 0) {
+        productList.innerHTML = '<div class="empty-state" id="empty-state"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23666\'%3E%3Cpath d=\'M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z\'/%3E%3C/svg%3E" alt="Shopping cart"><h3>No Products Added Yet</h3><p>Start by adding your first product using the form above</p></div>';
+        productCount.textContent = '0';
+        totalPriceEl.textContent = '0.00';
+        return;
+      }
+      
+      productList.innerHTML = '';
+      
+      products.forEach(({ id, name, price, category, date }) => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <div class="product-info">
+            <div class="product-name">${name}</div>
+            <div class="product-price">₹${price.toFixed(2)}</div>
+            <div class="product-category">${category}</div>
+            <div style="font-size: 0.8rem; color: #777; margin-top: 8px;">Added: ${date}</div>
+          </div>
+          <div class="product-actions">
+            <button class="details-btn" data-id="${id}">Details</button>
+            <button class="delete-btn" data-id="${id}">Delete</button>
+            <button class="add-to-cart-btn" data-id="${id}">Add to Cart</button>
+          </div>
+        `;
+        productList.appendChild(div);
+      });
+      
+      const total = calculateTotal();
+      productCount.textContent = products.length;
+      totalPriceEl.textContent = total.toFixed(2);
+    };
+
+    const showDetails = (id) => {
+      const product = products.find(p => p.id == id);
+      if (product) {
+        const { name, price, category, date } = product;
+        modalBody.innerHTML = `
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Price:</strong> ₹${price.toFixed(2)}</p>
+          <p><strong>Category:</strong> ${category}</p>
+          <p><strong>Added:</strong> ${date}</p>
+        `;
+        modal.style.display = 'block';
+      }
+    };
+
+    const deleteProduct = (id) => {
+      if (confirm('Are you sure you want to delete this product?')) {
+        products = products.filter(p => p.id != id);
+        saveProducts();
+        displayProducts();
+        showNotification('Product deleted successfully!');
+      }
+    };
+
+    const addToCart = (id) => {
+      const product = products.find(p => p.id == id);
+      if (product) {
+        // Check if product is already in cart
+        const existingItem = cart.find(item => item.id == id);
+        
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({...product, quantity: 1});
+        }
+        
+        saveCart();
+        updateCart();
+        showNotification('Product added to cart!');
+      }
+    };
+
+    const removeFromCart = (index) => {
+      cart.splice(index, 1);
+      saveCart();
+      updateCart();
+      showNotification('Product removed from cart!');
+    };
+
+    const updateCart = () => {
+      if (cart.length === 0) {
+        cartList.innerHTML = '<div class="cart-empty"><img src="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%23666\'%3E%3Cpath d=\'M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z\'/%3E%3C/svg%3E" alt="Empty cart"><h3>Your cart is empty</h3><p>Add products from the catalog</p></div>';
+        cartTotal.textContent = '0.00';
+        cartCount.textContent = '0 items';
+        return;
+      }
+      
+      cartList.innerHTML = '';
+      let total = 0;
+      let itemCount = 0;
+      
+      cart.forEach((item, index) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        itemCount += item.quantity;
+        
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        cartItem.innerHTML = `
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">₹${item.price.toFixed(2)} × ${item.quantity}</div>
+          </div>
+          <div class="cart-item-actions">
+            <div style="font-weight: 700; color: #4e54c8;">₹${itemTotal.toFixed(2)}</div>
+            <button class="remove-from-cart-btn" data-index="${index}">Remove</button>
+          </div>
+        `;
+        cartList.appendChild(cartItem);
+      });
+      
+      cartTotal.textContent = total.toFixed(2);
+      cartCount.textContent = `${itemCount} ${itemCount === 1 ? 'item' : 'items'}`;
+    };
+
+    const saveProducts = () => {
+      localStorage.setItem('products', JSON.stringify(products));
+    };
+    
+    const saveCart = () => {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    };
+    
+    const showNotification = (message, isError = false) => {
+      notification.textContent = message;
+      notification.className = isError ? 'notification error' : 'notification';
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    };
+  </script>
+</body>
+</html>
