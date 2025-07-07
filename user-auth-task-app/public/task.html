@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Today's Tasks</title>
+</head>
+<body>
+  <h2>Today's Tasks</h2>
+  <ul id="taskList"></ul>
+
+  <form id="taskForm">
+    <input type="text" id="taskInput" placeholder="Add task for today" required>
+    <button type="submit">Add Task</button>
+  </form>
+
+  <p id="message"></p>
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    // ✅ Escape HTML to prevent XSS
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ✅ Load today's tasks from server and update list
+    async function loadTasks() {
+      try {
+        const res = await fetch('/api/todaytask', { cache: 'no-store' });
+        const data = await res.json();
+        const list = document.getElementById('taskList');
+        list.innerHTML = ''; // clear list first
+
+        if (data.success) {
+          data.tasks.forEach(task => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+              <span>${escapeHtml(task.task)}</span>
+              <button onclick="editTask('${task._id}', '${encodeURIComponent(task.task)}')">Edit</button>
+              <button onclick="deleteTask('${task._id}')">Delete</button>
+            `;
+            list.appendChild(li);
+          });
+        } else {
+          alert('Not logged in, redirecting to login page');
+          window.location.href = 'login.html';
+        }
+      } catch (err) {
+        console.error('Error loading tasks:', err);
+        alert('Could not load tasks. Please try again.');
+      }
+    }
+
+    // ✅ Add new task
+    document.getElementById('taskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const taskText = document.getElementById('taskInput').value.trim();
+      if (!taskText) return;
+
+      try {
+        const res = await fetch('/api/addtask', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ task: taskText })
+        });
+        const data = await res.json();
+        document.getElementById('message').textContent = data.message;
+        if (data.success) {
+          document.getElementById('taskInput').value = '';
+          await loadTasks(); // refresh task list
+        }
+      } catch (err) {
+        console.error('Error adding task:', err);
+        alert('Could not add task.');
+      }
+    });
+
+    // ✅ Edit task
+    async function editTask(id, oldTaskEncoded) {
+      const oldTask = decodeURIComponent(oldTaskEncoded);
+      const newTask = prompt('Edit your task:', oldTask);
+      if (newTask && newTask !== oldTask) {
+        try {
+          const res = await fetch('/api/updatetask', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id, newTask })
+          });
+          const data = await res.json();
+          alert(data.message);
+          if (data.success) {
+            await loadTasks(); // refresh task list
+          }
+        } catch (err) {
+          console.error('Error editing task:', err);
+          alert('Could not edit task.');
+        }
+      }
+    }
+
+    // ✅ Delete task
+    async function deleteTask(id) {
+      if (confirm('Are you sure you want to delete this task?')) {
+        try {
+          const res = await fetch('/api/deletetask', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id })
+          });
+          const data = await res.json();
+          alert(data.message);
+          if (data.success) {
+            await loadTasks(); // refresh task list
+          }
+        } catch (err) {
+          console.error('Error deleting task:', err);
+          alert('Could not delete task.');
+        }
+      }
+    }
+
+    // ✅ Logout function
+    async function logout() {
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = 'login.html';
+    }
+
+    // ✅ Load tasks on page load
+    loadTasks();
+  </script>
+</body>
+</html>

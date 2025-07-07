@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome</title>
+</head>
+<body>
+  <h2 id="welcome"></h2>
+  <button onclick="goToTask()">Go to Task</button>
+  <button onclick="logout()">Logout</button>
+
+  <script>
+    async function loadUser(){
+      const res = await fetch('/api/user');
+      const data = await res.json();
+      if(data.loggedIn){
+        document.getElementById('welcome').innerText = `Welcome, ${data.username}!`;
+      } else {
+        window.location.href = 'login.html';
+      }
+    }
+
+    function goToTask(){
+      window.location.href = 'task.html';
+    }
+
+    async function logout(){
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = 'login.html';
+    }
+
+    loadUser();
+  </script>
+</body>
+</html>
