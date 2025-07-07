@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Interaction Board</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 1rem;
+      width: 100%;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+    main {
+      max-width: 600px;
+      width: 90%;
+      margin-top: 2rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      font-size: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background: #4a90e2;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3b7acb;
+    }
+    .message-list {
+      margin-top: 1rem;
+    }
+    .message {
+      background: white;
+      margin-bottom: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .message-header {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .like-btn {
+      margin-top: 0.5rem;
+      background: none;
+      color: #4a90e2;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .like-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>💬 Simple Interaction Board</header>
+  <main>
+    <form id="messageForm">
+      <input type="text" id="username" placeholder="Your name" required>
+      <textarea id="messageText" placeholder="What's on your mind?" rows="3" required></textarea>
+      <button type="submit">Post Message</button>
+    </form>
+    <div class="message-list" id="messageList"></div>
+  </main>
+
+  <script>
+    const messageForm = document.getElementById('messageForm');
+    const messageList = document.getElementById('messageList');
+    let messages = [];
+
+    messageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('username').value.trim();
+      const text = document.getElementById('messageText').value.trim();
+      if (name && text) {
+        const newMessage = { name, text, likes: 0 };
+        messages.unshift(newMessage); // Add to top
+        renderMessages();
+        messageForm.reset();
+      }
+    });
+
+    function renderMessages() {
+      messageList.innerHTML = '';
+      messages.forEach((msg, index) => {
+        const div = document.createElement('div');
+        div.className = 'message';
+        div.innerHTML = `
+          <div class="message-header">${msg.name}</div>
+          <div class="message-text">${msg.text}</div>
+          <button class="like-btn" onclick="likeMessage(${index})">👍 Like (${msg.likes})</button>
+        `;
+        messageList.appendChild(div);
+      });
+    }
+
+    function likeMessage(index) {
+      messages[index].likes++;
+      renderMessages();
+    }
+  </script>
+</body>
+</html>
