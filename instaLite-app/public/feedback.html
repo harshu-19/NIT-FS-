@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feedback - InstaLite</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Feedback</h2>
+  <div class="stars">
+    <span onclick="rate(1)">★</span>
+    <span onclick="rate(2)">★</span>
+    <span onclick="rate(3)">★</span>
+    <span onclick="rate(4)">★</span>
+    <span onclick="rate(5)">★</span>
+  </div>
+  <form action="/feedback" method="post">
+    <input type="hidden" name="rating" id="rating" required>
+    <textarea name="comment" placeholder="Write your comment..." required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+  <p>Average rating: <span id="avg">-</span></p>
+</div>
+<script src="js/rating.js"></script>
+</body>
+</html>
