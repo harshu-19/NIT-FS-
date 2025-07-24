@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html><head><title>Feed</title></head>
+<body>
+<h2>Feed</h2>
+<form id="up">
+<input name="caption" placeholder="Caption" required><br>
+<input type="file" name="image" required><br>
+<button>Upload</button></form>
+<div id="feed"></div>
+<button onclick="logout()">Logout</button>
+<script>
+async function load(){
+const r=await fetch('/api/posts');const d=await r.json();
+const f=document.getElementById('feed');f.innerHTML='';
+d.posts.forEach(p=>{
+const c=p.comments.map(x=>`<li><b>${x.user}:</b> ${x.text}</li>`).join('');
+f.innerHTML+=`
+<div>
+<p><b>${p.user}</b>: ${p.caption}</p>
+<img src="${p.imagePath}" width="200"><br>
+<button onclick="like('${p._id}')">❤️ Like (${p.likes.length})</button>
+<ul>${c}</ul>
+<input id="c${p._id}" placeholder="Comment">
+<button onclick="comment('${p._id}')">Add</button>
+</div>`;});
+}
+document.getElementById('up').onsubmit=async e=>{
+e.preventDefault();const fd=new FormData(e.target);
+const r=await fetch('/api/upload',{method:'POST',body:fd});const d=await r.json();alert(d.message);
+if(d.success) load();
+};
+async function like(id){await fetch('/api/like',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:id})});load();}
+async function comment(id){
+const t=document.getElementById('c'+id).value;
+await fetch('/api/comment',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({postId:id,text:t})});load();}
+async function logout(){await fetch('/api/logout',{method:'POST'});location='login.html';}
+load();
+</script>
+</body></html>

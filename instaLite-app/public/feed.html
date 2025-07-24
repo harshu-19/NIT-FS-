@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Feed - InstaLite</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="container">
+  <h2>Post something</h2>
+  <form action="/post" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" required>
+    <input type="text" name="caption" placeholder="Caption">
+    <button type="submit">Post</button>
+  </form>
+
+  <a href="feedback.html">Leave Feedback</a>
+
+  <h2>Feed</h2>
+  <div id="posts"></div>
+</div>
+
+<script>
+async function loadPosts() {
+  const res = await fetch('/posts');
+  const posts = await res.json();
+  document.getElementById('posts').innerHTML = posts.map(post => `
+    <div class="post">
+      <img src="uploads/${post.image}" alt="Post Image">
+      <p><b>${post.user}</b>: ${post.caption}</p>
+      <button onclick="like('${post._id}')">❤️ ${post.likes.length}</button>
+      <form onsubmit="return comment(event,'${post._id}')">
+        <input type="text" name="comment" placeholder="Add comment" required>
+        <button type="submit">Comment</button>
+      </form>
+      <div>
+        ${post.comments.map(c => `<p><b>${c.user}:</b> ${c.text}</p>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function like(id) {
+  await fetch('/like/' + id, { method: 'POST' });
+  loadPosts();
+}
+
+async function comment(e, id) {
+  e.preventDefault();
+  const text = e.target.comment.value;
+  if (!text.trim()) return;
+  await fetch('/comment/' + id, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: 'comment=' + encodeURIComponent(text)
+  });
+  e.target.reset();
+  loadPosts();
+  return false;
+}
+
+// Load posts when page loads
+loadPosts();
+</script>
+</body>
+</html>
